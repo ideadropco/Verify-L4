@@ -9,6 +9,10 @@ class VerifyServiceProvider extends ServiceProvider
 {
 	public function boot()
 	{
+        \Auth::provider('verify', function ($app, array $config) {
+            return new VerifyUserProvider($this->app['hash'], $config['model']);
+        });
+
 		$this->publishes([
 			__DIR__ . '/../../config/verify.php' => config_path('verify.php')
 		], 'config');
