@@ -13,8 +13,8 @@
     "keywords": ["laravel", "auth", "permissions", "roles", "verify"],
     "homepage": "http://docs.toddish.co.uk/verify-l4/",
     "require": {
-        "php": ">=5.5.9",
-        "illuminate/support": "5.1.*"
+        "php": "^7.1.3",
+        "illuminate/support": "5.8.*"
     },
     "autoload": {
         "psr-4": {
