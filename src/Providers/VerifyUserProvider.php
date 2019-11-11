@@ -48,10 +48,28 @@ class VerifyUserProvider extends EloquentUserProvider implements UserProvider
 
 	public function validateCredentials(UserContract $user, array $credentials)
 	{
-		$plain = $credentials['password'];
+        $plain = $credentials['password'];
+        // Is user password is valid?
+        if(!$this->hasher->check($user->salt.$plain, $user->getAuthPassword())) {
+            throw new UserPasswordIncorrectException('User password is incorrect');
+        }
 
-		return $this->hasher
-			->check($user->salt . $plain, $user->getAuthPassword());
+        // Valid user, but are they verified?
+        if (!$user->verified) {
+            throw new UserUnverifiedException('User is unverified');
+        }
+
+        // Is the user disabled?
+        if ($user->disabled) {
+            throw new UserDisabledException('User is disabled');
+        }
+
+        // Is the user deleted?
+        if ($user->deleted_at !== NULL) {
+            throw new UserDeletedException('User is deleted');
+        }
+
+        return true;
 	}
 
 	public function isVerified(UserContract $user)
@@ -64,3 +82,9 @@ class VerifyUserProvider extends EloquentUserProvider implements UserProvider
 		return $user->disabled;
 	}
 }
+
+class UserNotFoundException extends \Exception {};
+class UserUnverifiedException extends \Exception {};
+class UserDisabledException extends \Exception {};
+class UserDeletedException extends \Exception {};
+class UserPasswordIncorrectException extends \Exception {};
